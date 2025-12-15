@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "kuburan",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Nama": "Makam tembaga", "Alamat": "Pekunden", "desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.287401521547551, -7.517438348395188 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Nama": "Makam Depok", "Alamat": "Jl. deppok,Pekunden", "desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.287841763865927, -7.513635800294154 ] } }
+]
+}

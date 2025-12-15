@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Geoportal Banyumas Pekunden</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- Variabel Warna Utama --- */
+        :root { 
+            --color-primary: #444549; 
+            --color-secondary: #e7b51f;
+            --color-text-dark: #333; 
+            --color-shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: white; 
+            color: var(--color-text-dark); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* --- HEADER & NAVIGASI --- */
+        .main-header { 
+            background-color: var(--color-primary); 
+            color: white; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img {
+            width: 35px;
+            height: 35px;
+            border-radius: 10%;
+            margin-right: 10px;
+        }
+        
+        .logo-text { font-size: 24px; font-weight: bold; }
+        
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; transition: opacity 0.3s; }
+        nav a:hover { opacity: 0.8; }
+        
+        /* --- HERO SECTION --- */
+        .hero { 
+            background-image: url('kota.jpg'); /* Pastikan file 'kota.jpg' ada! */
+            background-size: cover; 
+            background-position: center; 
+            height: 400px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            text-align: center; 
+            padding: 0 20px; 
+            position: relative; 
+            
+            /* EFEK HOVER HERO */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px var(--color-shadow); 
+        }
+        
+        .hero::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0, 0, 0, 0.45); 
+        }
+        
+        .hero-content { z-index: 1; position: relative; }
+        .hero h2 { font-size: 40px; margin-bottom: 10px; }
+        .hero p { font-size: 18px; margin: 0 0 30px 0; max-width: 600px; }
+        
+        /* --- DROPDOWN STYLING --- */
+        .dropdown { position: relative; display: inline-block; }
+        
+        .cta-button { 
+            background-color: var(--color-secondary); 
+            color: var(--color-text-dark); 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 4px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            font-weight: bold; 
+            transition: background-color 0.3s;
+            margin-bottom: 5px;
+        }
+        .cta-button:hover { background-color: #ffda6a; }
+        
+        .dropdown-menu {
+            display: none; 
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px var(--color-shadow);
+            z-index: 10;
+            border-radius: 4px;
+            overflow: hidden;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+        }
+
+        .dropdown-menu a {
+            color: var(--color-text-dark);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-weight: normal;
+            font-size: 16px;
+        }
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+            color: var(--color-primary);
+        }
+        .dropdown.show .dropdown-menu { display: block; }
+
+        /* --- CONTENT & FEATURES --- */
+        .content { flex: 1; padding: 40px 5%; text-align: center; }
+        .section-title { font-size: 28px; color: var(--color-primary); margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
+        .section-title i { margin-right: 10px; color: var(--color-secondary); }
+        .features { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: 0 auto 40px auto; }
+        
+        /* *** KODE PERBAIKAN DAN PENAMBAHAN EFEK HOVER KARTU FITUR *** */
+        .feature-card { 
+            background-color: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            text-align: center; 
+            width: calc(33.333% - 20px); 
+            box-sizing: border-box; 
+            border: 1px solid #ddd; 
+            
+            /* [KUNCI] Transisi untuk efek halus */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* [KUNCI] Efek Mengambang Saat Hover */
+        .feature-card:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); 
+            cursor: pointer;
+        }
+        /* *************************************************************** */
+        
+        .feature-icon { font-size: 48px; margin-bottom: 15px; color: var(--color-primary); }
+        .feature-card h4 { color: var(--color-primary); margin-top: 0; font-size: 18px; }
+        .feature-card p { font-size: 14px; line-height: 1.5; color: #666; }
+        
+        /* --- FOOTER --- */
+        footer { background-color: var(--color-primary); color: white; text-align: center; padding: 20px 5%; font-size: 14px; }
+        .footer-contact { margin-top: 5px; }
+        
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; text-align: center; }
+            nav { margin-top: 10px; }
+            nav a { display: block; padding: 5px 0; }
+            .features { flex-direction: column; }
+            .feature-card { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas Pekunden</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
+            <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </div>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h2>Satu Peta untuk Data Spasial Terpadu</h2>
+            <p>Portal ini menyajikan peta interaktif dan data geospasial wilayah Kecamatan Banyumas dan Desa Pekunden untuk perencanaan dan pengembangan wilayah.</p>
+            
+            <div class="dropdown" id="map-dropdown">
+                <button class="cta-button" onclick="toggleDropdown()">
+                    Jelajahi Peta <i class="fas fa-caret-down"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
+                    <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="content">
+        <h3 class="section-title"><i class="fas fa-star"></i> Fitur Unggulan</h3>
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-layer-group feature-icon"></i>
+                <h4>Layers Berlapis</h4>
+                <p>Tampilkan lapisan peta seperti batas administrasi, jalan, dan penggunaan lahan.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-download feature-icon"></i>
+                <h4>Unduh Data</h4>
+                <p>Data geospasial tersedia dalam format Shapefile, GeoJSON, atau KML.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-search feature-icon"></i>
+                <h4>Pencarian Lokasi</h4>
+                <p>Cari lokasi berdasarkan nama desa, kecamatan, atau koordinat.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas Pekunden. Dibangun dengan QGIS, Leaflet, dan GitHub Pages.</p>
+        <p class="footer-contact">Kontak: AndhikaPutra1234@gmail.com**</p>
+    </footer>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("map-dropdown");
+            if (dropdown) {
+                dropdown.classList.toggle("show");
+            }
+        }
+        
+        window.onclick = function(event) {
+            // Jika klik BUKAN pada tombol CTA dan BUKAN di dalam wadah dropdown
+            if (!event.target.matches('.cta-button') && !event.target.closest('.dropdown')) {
+                const dropdown = document.getElementById("map-dropdown");
+                
+                // Tutup dropdown jika sedang terbuka
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

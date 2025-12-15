@@ -1,0 +1,22 @@
+{
+"type": "FeatureCollection",
+"name": "rumah_tetangga",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 2, "nama": "miran" }, "geometry": { "type": "Point", "coordinates": [ 109.287341890288957, -7.511529386227779 ] } },
+{ "type": "Feature", "properties": { "id": 3, "nama": "darsim" }, "geometry": { "type": "Point", "coordinates": [ 109.287523906035659, -7.511580531148343 ] } },
+{ "type": "Feature", "properties": { "id": 5, "nama": "Pak lurah" }, "geometry": { "type": "Point", "coordinates": [ 109.288285814925743, -7.51155571081925 ] } },
+{ "type": "Feature", "properties": { "id": 6, "nama": "babah tiwang" }, "geometry": { "type": "Point", "coordinates": [ 109.287799938180427, -7.511563232131094 ] } },
+{ "type": "Feature", "properties": { "id": 7, "nama": "nirwan" }, "geometry": { "type": "Point", "coordinates": [ 109.287814980804129, -7.511731709516465 ] } },
+{ "type": "Feature", "properties": { "id": 8, "nama": "joko" }, "geometry": { "type": "Point", "coordinates": [ 109.287977441140029, -7.511800905585456 ] } },
+{ "type": "Feature", "properties": { "id": 10, "nama": "sasongko" }, "geometry": { "type": "Point", "coordinates": [ 109.288091765080097, -7.511761794763853 ] } },
+{ "type": "Feature", "properties": { "id": 11, "nama": "mbah peno" }, "geometry": { "type": "Point", "coordinates": [ 109.288227148693338, -7.511778341649913 ] } },
+{ "type": "Feature", "properties": { "id": 14, "nama": "raffi" }, "geometry": { "type": "Point", "coordinates": [ 109.288347489682891, -7.511758786239114 ] } },
+{ "type": "Feature", "properties": { "id": 16, "nama": "aulia" }, "geometry": { "type": "Point", "coordinates": [ 109.288455796573487, -7.51174825640253 ] } },
+{ "type": "Feature", "properties": { "id": 17, "nama": "pak rt" }, "geometry": { "type": "Point", "coordinates": [ 109.28815795262436, -7.512721514155526 ] } },
+{ "type": "Feature", "properties": { "id": 5, "nama": "rizki" }, "geometry": { "type": "Point", "coordinates": [ 109.287941974539493, -7.511983077130936 ] } },
+{ "type": "Feature", "properties": { "id": 15, "nama": "azam" }, "geometry": { "type": "Point", "coordinates": [ 109.287395930850053, -7.51177730151136 ] } },
+{ "type": "Feature", "properties": { "id": 21, "nama": "babah tiwang" }, "geometry": { "type": "Point", "coordinates": [ 109.288599936231819, -7.511728339903962 ] } },
+{ "type": "Feature", "properties": { "id": 17, "nama": "sena" }, "geometry": { "type": "Point", "coordinates": [ 109.288696936621278, -7.511814562472368 ] } }
+]
+}

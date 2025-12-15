@@ -1,0 +1,22 @@
+{
+"type": "FeatureCollection",
+"name": "fasilitas_umum",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Nama": "Oemah gamelan", "Alamat": "JL.Perintis", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288421180188593, -7.51264397777727 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Nama": "Oemah batik", "Alamat": "Jl.sekolahan", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290331064133923, -7.51449711084002 ] } },
+{ "type": "Feature", "properties": { "id": 13, "Nama": "Roti qim", "Alamat": "Jl.masjid", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290077942621991, -7.515065816690627 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Nama": "HANNAVO HOMESTAY", "Alamat": "JL.pekunden", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.289235640974027, -7.515237005010002 ] } },
+{ "type": "Feature", "properties": { "id": 5, "Nama": "Rumah kassy", "Alamat": "JL.Sekolahan", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290557842986246, -7.515443062466453 ] } },
+{ "type": "Feature", "properties": { "id": 6, "Nama": "qiana Mom and baby spa", "Alamat": "Jl.sengkuyang", "Desa": "pekunden", "Kecamatan": "Banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.289220811641158, -7.515837532049087 ] } },
+{ "type": "Feature", "properties": { "id": 7, "Nama": "OEMAH MANGGLENG", "Alamat": "jl.Karang turi", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288293457219922, -7.518034713721196 ] } },
+{ "type": "Feature", "properties": { "id": 22, "Nama": "Src Murah rejeki", "Alamat": "JL.Pekunden", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288918339082841, -7.516645151424165 ] } },
+{ "type": "Feature", "properties": { "id": 8, "Nama": "HOMESTAY MBAH DARMO", "Alamat": "JL.jaya sirayu", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.289408626410903, -7.517228883696384 ] } },
+{ "type": "Feature", "properties": { "id": 23, "Nama": "Toko MUkena safira", "Alamat": "JL.Jaya sirayu", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290047916943152, -7.517472664139928 ] } },
+{ "type": "Feature", "properties": { "id": 9, "Nama": "Kembang oari  Desawisata Pekunden", "Alamat": "JL.Kali sawah pekunden", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.28280440668992, -7.528073065891441 ] } },
+{ "type": "Feature", "properties": { "id": 10, "Nama": "Kampung Nopia banyumas", "Alamat": "JL.Bnyumas Kebasen", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.287742982891558, -7.51140051986108 ] } },
+{ "type": "Feature", "properties": { "id": 11, "Nama": "Kebun Buah naga pekunden", "Alamat": "JL kali sawah pekunden", "Desa": "pekunden", "Kecamatan": "Banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288933934456423, -7.519785469464765 ] } },
+{ "type": "Feature", "properties": { "id": 12, "Nama": "Markas PSB", "Alamat": "JL.Kali sawah pekunden", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.286141427932932, -7.525536450608539 ] } },
+{ "type": "Feature", "properties": { "id": 14, "Nama": "Bahari farm", "Alamat": "Jl.kali sawah Pekunden", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.284937426107973, -7.527686453867397 ] } }
+]
+}

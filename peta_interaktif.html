@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Interaktif - Geoportal Banyumas Pekunden</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        /* --- CSS KONSISTENSI --- */
+        :root { 
+            --color-primary: #044b04; /* Hijau Tua */
+            --color-secondary: #ffc107; /* Kuning/Emas */
+        }
+
+        /* --- TATA LETAK UTAMA --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; padding: 0;
+            height: 100vh; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER (KRITIS: Tambahkan position: relative) --- */
+        .main-header {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative; /* Diperlukan untuk menempatkan menu mobile secara absolut */
+            z-index: 1001; /* Pastikan header di atas peta dan menu mobile */
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .logo-text { font-size: 24px; font-weight: bold; margin-left: 10px; }
+        
+        /* Navigasi Desktop */
+        nav { display: flex; } 
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; transition: color 0.2s; }
+        nav a:hover { color: var(--color-secondary); }
+
+        /* --- HAMBURGER TOGGLE (Hanya Terlihat di Mobile) --- */
+        .menu-toggle {
+            background: none; border: none; color: white; font-size: 24px;
+            cursor: pointer; display: none; /* Sembunyikan di desktop */
+        }
+
+        /* --- PETA CONTAINER --- */
+        .map-container { 
+            flex: 1; 
+            min-height: 0; 
+        }
+        #map { 
+            width: 100%; 
+            height: 100%; 
+        }
+
+        /* --- FOOTER (Opsional, ditambahkan untuk konsistensi) --- */
+        footer { 
+            background-color: var(--color-primary); 
+            color: white; 
+            text-align: center; 
+            padding: 8px; 
+            font-size: 12px;
+        }
+
+        /* ======================================================= */
+        /* KRITIS: MEDIA QUERY UNTUK TAMPILAN RESPONSIVE (HP) */
+        /* ======================================================= */
+        @media (max-width: 768px) {
+            
+            .main-header {
+                padding: 10px 15px; /* Kurangi padding horizontal di HP */
+            }
+
+            .logo-text {
+                font-size: 18px; 
+            }
+
+            /* Tampilkan tombol menu */
+            .menu-toggle {
+                display: block; 
+            }
+
+            /* Sembunyikan dan atur NAV sebagai menu vertikal di HP */
+            nav {
+                display: none; /* Sembunyikan secara default */
+                position: absolute;
+                top: 100%; /* Turun di bawah header */
+                right: 0;
+                width: 70%; 
+                max-width: 250px;
+                background-color: var(--color-primary);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+                flex-direction: column; 
+                z-index: 1000; /* Di bawah header, tapi di atas peta */
+                border-radius: 0 0 5px 5px;
+                animation: slideDown 0.2s ease-out;
+            }
+
+            /* Tampilkan NAV ketika class 'active' ditambahkan */
+            nav.active {
+                display: flex;
+            }
+
+            nav a {
+                padding: 12px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: left;
+            }
+            
+            /* Animasi sederhana untuk menu dropdown */
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo" style="width: 35px; height: 35px; border-radius: 50%;"> 
+            <span class="logo-text">Geoportal Banyumas Pekunden</span>
+        </div>
+        
+        <button class="menu-toggle" aria-label="Toggle navigation" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <nav id="main-nav">
+            <a href="index.html" style="font-weight: bold;"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
+            <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas Pekunden. Peta Interaktif.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // =========================================================================
+        // FUNGSI TOGGLE MENU HAMBURGER (UNTUK TAMPILAN MOBILE)
+        // =========================================================================
+        function toggleMenu() {
+            const nav = document.getElementById('main-nav');
+            nav.classList.toggle('active');
+            // Penting: Memaksa Leaflet untuk menghitung ulang ukuran peta
+            setTimeout(() => map.invalidateSize(), 50); 
+        }
+
+        // =========================================================================
+        // INISIALISASI PETA DAN DATA
+        // =========================================================================
+        var map = L.map('map').setView([-7.51, 109.28], 11); 
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' 
+        }).addTo(map);
+
+        let combinedLayers = []; 
+
+        /**
+         * Fungsi untuk memuat data GeoJSON
+         * @param {string} url - Path ke file GeoJSON.
+         * @param {object} style - Objek style Leaflet.
+         * @param {boolean} isInitialBounds - Apakah layer ini digunakan untuk batas awal.
+         */
+        function loadGeoJSON(url, style, isInitialBounds = false) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        // Jika file tidak ditemukan (404), tampilkan pesan di console
+                        console.warn(`[PERHATIAN] File ${url} tidak ditemukan atau gagal dimuat.`);
+                        return null; 
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        const layer = L.geoJSON(data, { 
+                            style: style,
+                            onEachFeature: (feature, layer) => {
+                                // Contoh sederhana popup
+                                if (feature.properties && feature.properties.NAMA) {
+                                    layer.bindPopup(`<b>${feature.properties.NAMA}</b>`);
+                                } else if (feature.properties && feature.properties.NAMA_DESA) {
+                                    layer.bindPopup(`<b>Desa ${feature.properties.NAMA_DESA}</b>`);
+                                }
+                            }
+                        }).addTo(map);
+                        
+                        combinedLayers.push(layer);
+                        if (isInitialBounds) {
+                             // Jika ini adalah batas utama, langsung panggil fitBounds
+                             map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+                        }
+                        fitMapToBounds();
+                    }
+                })
+                .catch(error => console.error(`Gagal memuat GeoJSON dari ${url}:`, error));
+        }
+
+        // 1. Batas Kecamatan Banyumas (Warna Hijau)
+        // Saya asumsikan file Anda berada di folder 'data/'
+        loadGeoJSON('data/kecamatan_banyumas.geojson', { 
+            color: 'green', 
+            weight: 3, 
+            fillOpacity: 0.1, 
+            dashArray: '5, 5'
+        }, true); // Gunakan ini sebagai batas awal jika dimuat lebih dulu
+        
+        // 2. Batas Desa Pekunden (Warna Merah)
+        loadGeoJSON('data/pekunden.geojson', { 
+            color: 'red', 
+            weight: 2, 
+            fillOpacity: 0.5 
+        });
+
+        // 3. Batas Desa lainnya (contoh)
+        loadGeoJSON('data/sudagaran.geojson', { 
+            color: 'blue', 
+            weight: 2, 
+            fillOpacity: 0.5 
+        });
+        
+        /** Menyesuaikan tampilan peta ke semua layer yang dimuat */
+        function fitMapToBounds() {
+            if (combinedLayers.length > 0) { 
+                const bounds = new L.FeatureGroup(combinedLayers).getBounds();
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                }
+            } else {
+                 // Jika tidak ada data, set view default
+                 map.setView([-7.51, 109.28], 11);
+            }
+        }
+        
+        // Memastikan peta menyesuaikan ukurannya setelah dimuat (untuk kasus lambat)
+        setTimeout(function () {
+            map.invalidateSize();
+            fitMapToBounds(); // Coba sesuaikan batas lagi
+        }, 300);
+
+    </script>
+</body>
+</html>

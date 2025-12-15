@@ -1,0 +1,15 @@
+{
+"type": "FeatureCollection",
+"name": "tempat_ibadah",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Nama": "Masjid jami pekunden", "Alamat": "JL.depokPekunden banyumas", "Desa": "pekunden", "Kecamatan": "Banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288475755941334, -7.514223552988178 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Nama": "GBT Banyumas", "Alamat": "Jl,Bms kebasen", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290576387805203, -7.511534795430596 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Nama": "Musholla Miftahul salam", "Alamat": "JL banyumas kebasen", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.287295687901093, -7.511575284941856 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Nama": "Musholla An-Nurr", "Alamat": "JL.Puteran pekunden", "Desa": "pekunden", "Kecamatan": "Banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.289559173021559, -7.512722642352312 ] } },
+{ "type": "Feature", "properties": { "id": 5, "Nama": "Masjid SUBULUSSALAM", "Alamat": "JL.masjid", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.290136474738148, -7.514938333541024 ] } },
+{ "type": "Feature", "properties": { "id": 6, "Nama": "masjid Karangturi", "Alamat": "JL.Karangturi", "Desa": "pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.288414915418272, -7.518239750580037 ] } },
+{ "type": "Feature", "properties": { "id": 7, "Nama": "Masjid Mifta Akbar", "Alamat": "JL.Kali sawah pekunden", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.284359133315562, -7.528336880573204 ] } },
+{ "type": "Feature", "properties": { "id": 9, "Nama": "Musholla Al-ikhlas", "Alamat": "JL.Pekunden banyumas", "Desa": "Pekunden", "Kecamatan": "banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.284449505747205, -7.52851439227092 ] } }
+]
+}

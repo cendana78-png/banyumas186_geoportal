@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "balai_desa",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Nama": "Balai desa Pekunden", "Alamat": "JL.Jaya sirayu", "Desa": "pekunden", "Kecamatan": "Banyumas" }, "geometry": { "type": "Point", "coordinates": [ 109.289040585988744, -7.513349273062524 ] } }
+]
+}

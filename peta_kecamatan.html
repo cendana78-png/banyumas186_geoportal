@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Administratif Kecamatan Banyumas</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-search/dist/leaflet-search.min.css" /> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" /> 
+
+    <style>
+        /* CSS Dasar & Tata Letak */
+        :root { 
+            --color-primary: #1f2223; 
+            --color-secondary: #ffc107; 
+        }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; min-height: 100vh; 
+            font-family: Arial, sans-serif; display: flex; flex-direction: column; 
+        }
+        .map-container { flex: 1; display: flex; flex-direction: column; }
+        #map { flex-grow: 1; height: 100%; } 
+        
+        /* Header dan Footer */
+        .main-header { 
+            background-color: var(--color-primary); color: white; padding: 10px 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: relative; /* Penting untuk penempatan menu mobile */
+        }
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; }
+        .logo-text { font-size: 24px; font-weight: bold; }
+        
+        /* Navigasi Menu Desktop */
+        nav { display: flex; } 
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; }
+        
+        /* KRITIS: Menu Toggle (Hanya terlihat di HP) */
+        .menu-toggle {
+            background: none; border: none; color: white; font-size: 24px;
+            cursor: pointer; display: none; 
+        }
+
+        .page-title { background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; color: var(--color-primary); border-bottom: 2px solid #ddd; }
+        footer { background-color: var(--color-primary); color: white; text-align: center; padding: 10px; font-size: 12px; }
+
+        /* Style Marker Balai Desa */
+        .leaflet-marker-icon.balai-desa-icon i { font-size: 28px; color: blue; text-shadow: 2px 2px 3px rgba(0,0,0,0.5); }
+        .search-marker-icon i { animation: bounce 1s infinite alternate; }
+        
+        /* Label Permanen Otomatis */
+        .custom-permanent-label {
+            background: transparent !important; border: none !important; box-shadow: none !important;
+            font-weight: bold; font-size: 12px; color: var(--color-secondary); 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9); white-space: nowrap;
+            opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; 
+        }
+        
+        /* Tata Letak Kontrol Peta (Desktop Default) */
+        .leaflet-control-zoom { margin-top: 50px !important; margin-left: 10px; }
+        .leaflet-control-locate { margin-top: 8px !important; margin-left: 10px; }
+        .leaflet-control-search { margin-top: 10px !important; margin-left: 10px !important; }
+        .leaflet-control-geocoder { 
+            margin-top: 8px !important; 
+            margin-left: 10px !important;
+            border-radius: 4px;
+        }
+        .leaflet-control-layers { margin-top: 10px !important; margin-right: 10px !important; }
+        
+        /* LEGEND KUSTOM & SCROLL */
+        .leaflet-control-custom-legend { margin-left: 10px; } 
+        .leaflet-control-custom-legend .leaflet-control-layers-toggle {
+            background-color: white; 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23333333" d="M32 448H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32zM0 32C0 14.3 14.3 0 32 0H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 64 0 49.7 0 32z"/></svg>'); 
+            background-repeat: no-repeat; background-position: center center; 
+            background-size: 24px 24px; 
+            width: 36px; height: 36px; border-radius: 4px; 
+            cursor: pointer;
+            display: block; 
+            box-shadow: 0 1px 5px rgba(0,0,0,0.4); 
+        }
+        .leaflet-control-custom-legend .legend-content {
+            padding: 6px 10px; font-size: 14px; background: rgba(255, 255, 255, 0.95); 
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); border-radius: 5px; 
+            display: none; max-height: 70vh; overflow-y: auto; max-width: 250px; 
+            margin-bottom: 10px; 
+        }
+        .leaflet-control-custom-legend.expanded .legend-content { 
+            display: block; transform-origin: bottom left; animation: fadeInTop 0.2s ease-out;
+        }
+
+        @keyframes fadeInTop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+        .leaflet-control-custom-legend h4 { margin: 0 0 5px; color: #444; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+        .leaflet-control-custom-legend .legend-item { margin-bottom: 3px; line-height: 18px; clear: both; }
+
+        span.legend-line { width: 20px; box-sizing: border-box; border: 1px solid #333; float: left; margin-right: 8px; }
+        span.legend-area { width: 18px; height: 18px; border: 1px solid #333; float: left; margin-right: 8px; box-sizing: border-box; }
+        .legend-item i.fas { float: left; margin-right: 8px; width: 20px; text-align: center; font-size: 16px; }
+
+        /* ======================================================= */
+        /* KRITIS: MEDIA QUERY UNTUK TAMPILAN RESPONSIVE (HP) */
+        /* ======================================================= */
+        @media (max-width: 768px) {
+            .main-header {
+                padding: 10px 15px;
+                /* Memastikan header tetap di atas saat scroll */
+                position: sticky; top: 0; z-index: 2000;
+            }
+            
+            .logo-text {
+                font-size: 18px; 
+            }
+
+            /* Tampilkan tombol menu */
+            .menu-toggle {
+                display: block; 
+            }
+
+            /* Sembunyikan dan atur NAV sebagai menu vertikal di HP */
+            nav {
+                display: none; /* Sembunyikan secara default */
+                position: absolute;
+                top: 100%; /* Turun di bawah header */
+                right: 0;
+                width: 70%; 
+                max-width: 250px;
+                background-color: var(--color-primary);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+                flex-direction: column; 
+                z-index: 1000; 
+                border-radius: 0 0 5px 5px;
+            }
+
+            /* Tampilkan NAV ketika class 'active' ditambahkan */
+            nav.active {
+                display: flex;
+            }
+
+            nav a {
+                padding: 12px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: left;
+            }
+            
+            /* Page Title dikecilkan di HP */
+            .page-title {
+                font-size: 20px;
+                padding: 10px;
+            }
+
+            /* Kontrol Peta: Geser ke bawah agar tidak tertutup header HP */
+            /* Sesuaikan urutan margin-top agar tidak bertabrakan */
+            .leaflet-control-zoom { margin-top: 10px !important; margin-left: 10px; }
+            .leaflet-control-locate { margin-top: 10px !important; margin-left: 10px; }
+            /* Geocoder dan Search perlu diatur agar posisinya teratur di HP */
+            .leaflet-control-search { 
+                margin-top: 50px !important; /* Di bawah Locate & Zoom */
+                margin-left: 10px !important; 
+            }
+            .leaflet-control-geocoder { 
+                margin-top: 85px !important; /* Di bawah Search */
+                margin-left: 10px !important;
+            }
+
+            /* Kontrol Kanan (Layer Control) */
+            .leaflet-control-layers { 
+                margin-top: 10px !important; 
+                margin-right: 10px !important; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        
+        <button class="menu-toggle" aria-label="Toggle navigation" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <nav id="main-nav">
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html" style="font-weight: bold;"><i class="fas fa-map"></i> Peta Banyumas</a>
+            <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </div>
+
+    <div class="page-title">
+        Peta Administratif Kecamatan Banyumas
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas. Peta Kecamatan.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/leaflet-search/dist/leaflet-search.min.js"></script> 
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script> 
+
+    <script>
+    // =========================================================================
+    // FUNGSI UTILITY GLOBAL
+    // =========================================================================
+    
+    // FUNGSI TOGGLE MENU HAMBURGER (UNTUK TAMPILAN MOBILE)
+    function toggleMenu() {
+        const nav = document.getElementById('main-nav');
+        nav.classList.toggle('active');
+        // Penting: Refresh peta setelah menu dibuka/ditutup
+        setTimeout(() => map.invalidateSize(), 50);
+    }
+
+    // =========================================================================
+    // 1. INISIALISASI DAN BASEMAPS
+    // =========================================================================
+    var map = L.map('map', { zoomControl: false }).setView([-7.525, 109.30], 13); 
+
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    const satellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Map data ©2025 Google'
+    });
+    satellite.addTo(map);
+
+    let labeledLayers = []; 
+    let overlayLayers = {};
+    let layerPromises = []; 
+    let boundaryLayer = null; 
+    
+    // =========================================================================
+    // 2. FUNGSI UTILITY: POPUP, LABEL, DAN MARKER
+    // =========================================================================
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    
+    /** Fungsi untuk mengikat Popup dan Tooltip Permanen (Label Otomatis) */
+    function onEachFeature(feature, layer) {
+        if (feature.properties) {
+            let popupContent = "<table>";
+            let labelText = '';
+            let isAreaLayer = (layer.options.layerName !== 'balai desa' && layer.options.layerName !== 'Kecamatan Banyumas');
+
+            for (let key in feature.properties) {
+                if (feature.properties[key] && !['fid', 'id', 'Id', 'layer'].includes(key.toLowerCase())) { 
+                    let labelKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    popupContent += `<tr><td><b>${labelKey}:</b></td><td>${feature.properties[key]}</td></tr>`;
+                }
+            }
+            popupContent += "</table>";
+            layer.bindPopup(popupContent);
+
+            // FOKUS LABEL PADA NAMA DESA / NAMA POI
+            if (feature.properties.NAMA_DESA) { 
+                labelText = feature.properties.NAMA_DESA;
+            } else if (feature.properties.NAMA) { 
+                labelText = feature.properties.NAMA;
+            } else if (layer.options.layerName) {
+                // Untuk kasus boundary kecamatan itu sendiri
+                labelText = layer.options.layerName;
+            }
+
+            if (labelText) {
+                layer.bindTooltip(labelText, {
+                    permanent: true, 
+                    direction: isAreaLayer ? 'center' : 'auto', 
+                    className: 'custom-permanent-label', 
+                    opacity: 1 
+                });
+                labeledLayers.push({ 
+                    layer: layer, 
+                    isArea: isAreaLayer 
+                });
+            }
+        }
+    }
+    
+    /** Fungsi pembuat marker Balai Desa */
+    const createBalaiDesaMarker = (feature, latlng) => L.marker(latlng, { 
+        icon: L.divIcon({ 
+            className: 'custom-icon balai-desa-icon', 
+            html: `<i class="fas fa-landmark" style="color: blue;"></i>` 
+        }),
+        zIndexOffset: 1500,
+        title: feature.properties.NAMA || 'Balai Desa'
+    });
+
+    /** Fungsi utama untuk memuat data GeoJSON */
+    function loadGeoJSONLayer(fileName, layerName, styleOptions, pointToLayerFunc, isBoundary = false) {
+        const url = fileName; 
+        const geoJsonOptions = { 
+            style: styleOptions, 
+            pointToLayer: pointToLayerFunc, 
+            onEachFeature: onEachFeature,
+            layerName: layerName, 
+            minZoom: styleOptions && styleOptions.minZoom !== undefined ? styleOptions.minZoom : 0,
+            maxZoom: styleOptions && styleOptions.maxZoom !== undefined ? styleOptions.maxZoom : 22
+        };
+
+        const promise = fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`[Error 404] File tidak ditemukan: ${fileName}.`);
+                return response.json();
+            })
+            .then(data => {
+                const layer = L.geoJSON(data, geoJsonOptions); 
+                layer.addTo(map);
+
+                if (isBoundary) { boundaryLayer = layer; }
+
+                overlayLayers[layerName] = layer;
+                return layer;
+            })
+            .catch(error => {
+                console.error(`Gagal memuat lapisan ${layerName}:`, error.message);
+                console.warn(`[PERHATIAN] Pastikan file GeoJSON '${fileName}' ada di direktori yang sama.`);
+                const emptyLayer = L.featureGroup();
+                overlayLayers[layerName] = emptyLayer;
+                return emptyLayer; 
+            });
+        layerPromises.push(promise);
+    }
+
+    // =========================================================================
+    // 3. PEMUATAN LAPISAN UTAMA (DATA LAYER)
+    // =========================================================================
+    
+    // Daftar nama desa
+    const namaDesa = [
+        "Pekunden", "kedunguter", "sudagaran", "papringan", "kalisube", 
+        "Binangun", "Karangrau", "Danaraja", "Dawuhan", "pasinggangan", 
+        "Kejawar", "kedunggede"
+    ];
+    
+    // 1. Batas Desa
+    namaDesa.forEach(desa => {
+        const fileName = `${desa.toLowerCase()}.geojson`;
+        loadGeoJSONLayer(fileName, desa, { 
+            color: getRandomColor(), 
+            weight: 2, 
+            fillOpacity: 0.3, 
+            minZoom: 13 
+        }, null, false);
+    });
+
+    // 2. Batas Kecamatan
+    loadGeoJSONLayer('kecamatan_banyumas.geojson', 'Kecamatan Banyumas', { 
+        color: 'black', 
+        weight: 5, 
+        fillOpacity: 0.0, 
+        dashArray: '10, 5', 
+        minZoom: 12 
+    }, null, true); 
+
+    // 3. Balai Desa
+    loadGeoJSONLayer('balai_desaa.geojson', 'Balai Desa', { minZoom: 13 }, createBalaiDesaMarker); 
+
+
+    // =========================================================================
+    // 4. FUNGSI KRITIS: MENGATUR VISIBILITAS LABEL OTOMATIS
+    // =========================================================================
+    function updateLabelVisibility() {
+        const currentZoom = map.getZoom();
+        const minZoomLevelForArea = 13;
+        const minZoomLevelForPOI = 14;
+
+        labeledLayers.forEach(item => {
+            const layer = item.layer;
+            const isArea = item.isArea;
+
+            if (layer.getTooltip && layer.getTooltip()) {
+                const tooltipElement = layer.getTooltip().getElement();
+                if (!tooltipElement) return;
+
+                let targetOpacity = 0;
+                
+                if (isArea && currentZoom >= minZoomLevelForArea) {
+                    targetOpacity = 0.9;
+                }
+                
+                if (!isArea && currentZoom >= minZoomLevelForPOI) {
+                    targetOpacity = 0.8;
+                }
+
+                tooltipElement.style.opacity = targetOpacity.toString();
+            }
+        });
+        
+        // Final check untuk Leaflet agar tidak ada bug render
+        setTimeout(() => map.invalidateSize(), 50);
+    }
+
+    // =========================================================================
+    // 5. INITIALIZATION & CONTROLS
+    // =========================================================================
+    
+    Promise.all(layerPromises)
+        .then(() => {
+            const baseMaps = { "OpenStreetMap": osm, "Citra Satelit (Google)": satellite };
+            const overlays = overlayLayers;
+
+            // 1. LAYER CONTROL STANDAR
+            L.control.layers(baseMaps, overlays, { collapsed: true, position: 'topright' }).addTo(map);
+            
+            // 2. ZOOM, LOCATE
+            L.control.zoom({ position: 'topleft' }).addTo(map);
+            L.control.locate({ strings: { title: "Tunjukkan lokasi saya" }, position: 'topleft', flyTo: true, setView: 'once', drawCircle: false }).addTo(map);
+            
+            // 3. Gabungkan semua fitur untuk pencarian POI/Desa (Pencarian Berdasarkan Properti)
+            const layersForSearch = [];
+            for (const key in overlayLayers) {
+                if (overlayLayers[key] && overlayLayers[key].getLayers && overlayLayers[key].getLayers().length > 0) {
+                    layersForSearch.push(overlayLayers[key]);
+                }
+            }
+            const allFeatures = L.featureGroup(layersForSearch);
+            
+            // 4. SEARCH CONTROL (Pencarian Berdasarkan Properti Data Layer)
+            L.control.search({
+                layer: allFeatures, 
+                propertyName: ['NAMA', 'NAMA_DESA', 'KECAMATAN', 'name'], 
+                initial: false, 
+                zoom: 15, 
+                marker: { 
+                    icon: L.divIcon({ 
+                        className: 'search-marker-icon', 
+                        html: '<i class="fas fa-map-marker-alt" style="color: red; font-size: 30px; text-shadow: 1px 1px 2px #000;"></i>',
+                        iconSize: [30, 30] 
+                    }),
+                    animate: true
+                },
+                textPlaceholder: 'Cari Nama Desa/Balai Desa...', 
+                position: 'topleft' 
+            }).addTo(map);
+            
+            // 5. LEAFLET CONTROL GEOCODER (Pencarian Alamat/Koordinat)
+            L.Control.geocoder({
+                position: 'topleft', 
+                placeholder: 'Cari Alamat atau Lat, Lon...',
+                errorMessage: 'Tidak ditemukan.',
+                geocoders: [ L.Control.Geocoder.nominatim({}) ],
+                showResultIcons: true,
+                defaultMarkGeocode: true
+            }).on('markgeocode', function(e) {
+                var bbox = e.geocode.bbox;
+                var poly = L.polygon([
+                    [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
+                    [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
+                    [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
+                    [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+                ]).addTo(map);
+                map.fitBounds(poly.getBounds());
+                poly.bindPopup(e.geocode.name + '<br>Koordinat: ' + e.geocode.center.lat.toFixed(6) + ', ' + e.geocode.center.lng.toFixed(6)).openPopup();
+                setTimeout(function() {
+                    map.removeLayer(poly);
+                }, 5000); 
+            }).addTo(map);
+            
+            // 6. CUSTOM COLLAPSIBLE LEGEND CONTROL
+            var CustomLegendControl = L.Control.extend({
+                options: { position: 'bottomleft' }, 
+                onAdd: function (map) {
+                    var container = L.DomUtil.create('div', 'leaflet-control-custom-legend leaflet-bar');
+                    var content = L.DomUtil.create('div', 'legend-content', container);
+                    var toggle = L.DomUtil.create('a', 'leaflet-control-layers-toggle', container);
+
+                    content.innerHTML = '<h4>Legenda Layer</h4>' +
+                        '<div class="legend-item"><span class="legend-line" style="background: none; border: 5px dashed black; height: 1px; margin-top: 7px;"></span> Batas Kecamatan</div>' +
+                        '<div class="legend-item"><span class="legend-area" style="background-color: transparent; border: 2px solid grey;"></span> Batas Desa (Warna Acak)</div>' +
+                        '<div class="legend-item"><i class="fas fa-landmark" style="color: blue;"></i> Balai Desa</div>';
+                    
+                    L.DomEvent.on(toggle, 'click', function(e) {
+                        L.DomEvent.stop(e); 
+                        L.DomUtil.toggleClass(container, 'expanded');
+                    });
+                    
+                    L.DomEvent.disableClickPropagation(container);
+                    L.DomEvent.disableScrollPropagation(container);
+                    
+                    return container;
+                }
+            });
+            new CustomLegendControl().addTo(map); 
+            
+            // FitBounds: Zoom ke Batas Kecamatan
+            if (boundaryLayer && boundaryLayer.getBounds().isValid()) {
+                 map.fitBounds(boundaryLayer.getBounds(), { padding: [50, 50] });
+            } else if (allFeatures.getBounds().isValid()) {
+                 map.fitBounds(allFeatures.getBounds(), { padding: [50, 50] });
+            } else {
+                 map.setView([-7.525, 109.30], 13);
+            }
+
+            // Event Label Visibility
+            map.on('zoomend', updateLabelVisibility);
+            updateLabelVisibility(); 
+        })
+        .catch(error => {
+            console.error("Kesalahan utama saat memuat data peta:", error);
+            alert("Gagal memuat seluruh data peta. Pastikan semua file GeoJSON Desa, Balai Desa (balai_desaa.geojson), dan Kecamatan (kecamatan_banyumas.geojson) tersedia di folder yang sama.");
+        });
+    </script>
+</body>
+</html>

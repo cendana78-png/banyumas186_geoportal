@@ -51,7 +51,7 @@
         
         /* --- HERO SECTION --- */
         .hero { 
-            background-image: url('kota.jpg'); /* Pastikan file 'kota.jpg' ada! */
+            background-image: url('kota.jpg'); 
             background-size: cover; 
             background-position: center; 
             height: 400px; 
@@ -63,8 +63,6 @@
             text-align: center; 
             padding: 0 20px; 
             position: relative; 
-            
-            /* EFEK HOVER HERO */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -128,40 +126,117 @@
             font-weight: normal;
             font-size: 16px;
         }
-        .dropdown-menu a:hover {
-            background-color: #f1f1f1;
-            color: var(--color-primary);
-        }
         .dropdown.show .dropdown-menu { display: block; }
+
+        /* --- INFO WILAYAH (LAYOUT DIPERBAIKI) --- */
+        .info-section {
+            padding: 40px 5%;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-desc {
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* PERUBAHAN DISINI: Grid diubah menjadi Flexbox agar bisa di-center */
+        .village-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Mengetengahkan isi baris terakhir */
+            gap: 25px; 
+            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .village-card {
+            background-color: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            cursor: default;
+            position: relative;
+            border-top: 4px solid var(--color-primary);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Mengatur lebar agar tetap konsisten seperti grid */
+            width: 210px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .village-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            z-index: 2;
+            border-top-color: var(--color-secondary);
+        }
+
+        .village-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: border-color 0.3s;
+            background-color: #ddd;
+        }
+
+        .village-card:hover .village-img {
+            border-color: var(--color-secondary);
+        }
+
+        .village-card span {
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .village-type {
+            font-size: 12px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background-color: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
 
         /* --- CONTENT & FEATURES --- */
         .content { flex: 1; padding: 40px 5%; text-align: center; }
         .section-title { font-size: 28px; color: var(--color-primary); margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
         .section-title i { margin-right: 10px; color: var(--color-secondary); }
-        .features { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: 0 auto 40px auto; }
+        .features { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: 0 auto 40px auto; }
         
-        /* *** KODE PERBAIKAN DAN PENAMBAHAN EFEK HOVER KARTU FITUR *** */
         .feature-card { 
             background-color: white; 
             padding: 30px; 
             border-radius: 8px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
             text-align: center; 
-            width: calc(33.333% - 20px); 
+            width: 300px; 
             box-sizing: border-box; 
             border: 1px solid #ddd; 
-            
-            /* [KUNCI] Transisi untuk efek halus */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        /* [KUNCI] Efek Mengambang Saat Hover */
         .feature-card:hover {
             transform: translateY(-5px); 
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); 
             cursor: pointer;
         }
-        /* *************************************************************** */
         
         .feature-icon { font-size: 48px; margin-bottom: 15px; color: var(--color-primary); }
         .feature-card h4 { color: var(--color-primary); margin-top: 0; font-size: 18px; }
@@ -176,7 +251,7 @@
             .main-header { flex-direction: column; text-align: center; }
             nav { margin-top: 10px; }
             nav a { display: block; padding: 5px 0; }
-            .features { flex-direction: column; }
+            .features { flex-direction: column; align-items: center; }
             .feature-card { width: 100%; }
         }
     </style>
@@ -214,6 +289,39 @@
         </div>
     </div>
 
+    <div class="info-section">
+        <h3 class="section-title"><i class="fas fa-landmark"></i> Profil Wilayah Kecamatan Banyumas</h3>
+        
+        <div class="info-desc">
+            <p><strong>Kecamatan Banyumas</strong> adalah salah satu kecamatan di Kabupaten Banyumas, Jawa Tengah, Indonesia. Wilayah ini memiliki nilai sejarah yang tinggi sebagai bekas pusat pemerintahan kadipaten sebelum dipindahkan ke Purwokerto. Kecamatan ini terdiri dari <strong>12 desa/kelurahan</strong> dengan data administratif sebagai berikut:</p>
+        </div>
+
+      <div class="village-grid">
+            <a href="desa_binangun.html" class="village-card"><img src="binangun.png" class="village-img"><span>Binangun</span><div class="village-type">Desa</div></a>
+            <a href="desa_danaraja.html" class="village-card"><img src="danaraja.png" class="village-img"><span>Danaraja</span><div class="village-type">Desa</div></a>
+            <a href="desa_dawuhan.html" class="village-card"><img src="dawuhan.png" class="village-img"><span>Dawuhan</span><div class="village-type">Desa</div></a>
+            <a href="desa_kalisube.html" class="village-card"><img src="kalisube.png" class="village-img"><span>Kalisube</span><div class="village-type">Desa</div></a>
+            <a href="desa_karangrau.html" class="village-card"><img src="karangrau.png" class="village-img"><span>Karangrau</span><div class="village-type">Desa</div></a>
+            <a href="desa_kedunggede.html" class="village-card"><img src="kedunggede.png" class="village-img"><span>Kedunggede</span><div class="village-type">Desa</div></a>
+            <a href="desa_kedunguter.html" class="village-card"><img src="kedunguter.png" class="village-img"><span>Kedunguter</span><div class="village-type">Desa</div></a>
+            <a href="desa_kejawar.html" class="village-card"><img src="kejawar.png" class="village-img"><span>Kejawar</span><div class="village-type">Desa</div></a>
+            <a href="desa_papringan.html" class="village-card"><img src="papringan.png" class="village-img"><span>Papringan</span><div class="village-type">Desa</div></a>
+            <a href="desa_pasinggangan.html" class="village-card"><img src="pasinggangan.png" class="village-img"><span>Pasinggangan</span><div class="village-type">Desa</div></a>
+
+            <a href="desa_pekunden.html" class="village-card" style="border-top-color: var(--color-secondary);">
+                <img src="pekunden.png" class="village-img">
+                <span>Pekunden</span>
+                <div class="village-type">Desa</div>
+            </a>
+            <a href="desa_sudagaran.html" class="village-card">
+                <img src="sudagaran.png" class="village-img">
+                <span>Sudagaran</span>
+                <div class="village-type">Desa</div>
+            </a>
+        </div>
+        </div>
+    </div>
+
     <div class="content">
         <h3 class="section-title"><i class="fas fa-star"></i> Fitur Unggulan</h3>
         <div class="features">
@@ -237,7 +345,7 @@
     
     <footer>
         <p>&copy; 2025 Geoportal Banyumas Pekunden. Dibangun dengan QGIS, Leaflet, dan GitHub Pages.</p>
-        <p class="footer-contact">Kontak: AndhikaPutra1234@gmail.com**</p>
+        <p class="footer-contact">Kontak: AndhikaPutra1234@gmail.com</p>
     </footer>
 
     <script>
@@ -249,11 +357,8 @@
         }
         
         window.onclick = function(event) {
-            // Jika klik BUKAN pada tombol CTA dan BUKAN di dalam wadah dropdown
             if (!event.target.matches('.cta-button') && !event.target.closest('.dropdown')) {
                 const dropdown = document.getElementById("map-dropdown");
-                
-                // Tutup dropdown jika sedang terbuka
                 if (dropdown && dropdown.classList.contains('show')) {
                     dropdown.classList.remove('show');
                 }

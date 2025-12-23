@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Desa Pekunden - Geoportal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root { --primary: #444549; --secondary: #e7b51f; }
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: var(--primary); font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-item { background: #eee; padding: 15px; border-radius: 5px; text-align: center; }
+        .stat-item i { font-size: 24px; color: var(--secondary); margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+   <div class="main-header">
+    <div class="header-left">
+        <img src="Banyumas.png" alt="Logo">
+        <span class="logo-text">Geoportal Banyumas Pekunden</span>
+    </div>
+    <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+        <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
+        <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
+        <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+    </nav>
+</div>
+        <div class="card">
+            <h3><i class="fas fa-info-circle"></i> Profil Singkat</h3>
+            <p>Desa Pekunden merupakan pusat kebudayaan dan sejarah di Kecamatan Banyumas. Data ini terintegrasi dengan sistem Backend API.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item"><i class="fas fa-users"></i><h4>Populasi</h4><p>± 2.500 Jiwa</p></div>
+            <div class="stat-item"><i class="fas fa-map-marked-alt"></i><h4>Luas Wilayah</h4><p>120 Ha</p></div>
+            <div class="stat-item"><i class="fas fa-landmark"></i><h4>Situs Budaya</h4><p>5 Lokasi</p></div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h3>Aksi Data (CRUD)</h3>
+            <button style="padding: 10px; background: var(--secondary); border: none; cursor: pointer;">Kelola Data Spasial</button>
+        </div>
+    </div>
+</body>
+</html>

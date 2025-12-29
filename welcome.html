@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Geoportal Banyumas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background-color: #0056b3;
+        }
+
+        /* --- BACKGROUND ANIMASI --- */
+        .hero-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, #00a2ff 0%, #003d80 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Overlay Pola Garis Halus */
+        .hero-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        /* --- NAVIGASI ATAS --- */
+        .top-nav {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area img { width: 35px; height: 35px; }
+        .logo-area span { font-weight: bold; font-size: 1.1rem; letter-spacing: 0.5px; }
+
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links li a { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+        .nav-links li a:hover { color: #e7b51f; }
+
+        /* --- KONTEN UTAMA --- */
+        .content {
+            position: relative;
+            z-index: 5;
+            max-width: 900px;
+            padding: 20px;
+            perspective: 1000px; /* Penting untuk efek 3D rolling */
+        }
+
+        /* ANIMASI BERGULING (ROLLING TEXT) */
+        .rolling-text-box {
+            display: inline-block;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .rolling-text {
+            display: inline-block;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            
+            /* Animasi Gerakan Berguling */
+            animation: animeRoll 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            transform-origin: top;
+        }
+
+        @keyframes animeRoll {
+            0% {
+                opacity: 0;
+                transform: rotateX(-100deg) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateX(0deg) translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease 0.9s backwards;
+        }
+
+        /* --- TOMBOL MASUK --- */
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 40px;
+            background-color: white;
+            color: #0056b3;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+            animation: fadeInUp 1s ease 1.2s backwards;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+            background-color: #f0f0f0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn-start i {
+            transition: 0.3s;
+        }
+
+        .btn-start:hover i {
+            transform: translateX(8px);
+        }
+
+        /* --- DEKORASI BACKGROUND --- */
+        .bg-curves {
+            position: absolute;
+            bottom: -10%;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: url('https://raw.githubusercontent.com/davidkpiano/fluid-curves/master/curves.svg');
+            background-size: cover;
+            opacity: 0.15;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- ANIMASI UMUM --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-exit {
+            opacity: 0;
+            transform: scale(1.1);
+            transition: 0.8s;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Sembunyikan link di HP agar bersih */
+            .top-nav { padding: 15px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-wrapper" id="welcome-screen">
+        <nav class="top-nav">
+            <div class="logo-area">
+                <img src="Banyumas.png" alt="Logo">
+                <span>Geoportal Banyumas</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">Beranda</a></li>
+                <li><a href="#">Peta</a></li>
+                <li><a href="#">Tentang</a></li>
+                <li><a href="#"><i class="fas fa-bars"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="bg-curves"></div>
+
+        <div class="content">
+            <div class="rolling-text-box">
+                <h1 class="rolling-text">Selamat Datang</h1>
+            </div>
+            <h2>DI GEOPORTAL BANYUMAS</h2>
+            <p>Sistem Informasi Geografis interaktif untuk visualisasi pemetaan wilayah, batas desa, dan fasilitas publik di Kecamatan Banyumas.</p>
+            
+            <button class="btn-start" onclick="startExperience()">
+                MASUK SEKARANG <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function startExperience() {
+            // Tambahkan efek transisi keluar
+            document.getElementById('welcome-screen').classList.add('fade-exit');
+            
+            // Pindah ke halaman utama setelah animasi selesai
+            setTimeout(function() {
+                window.location.href = 'index.html'; 
+            }, 800);
+        }
+    </script>
+</body>
+</html>

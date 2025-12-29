@@ -2,42 +2,244 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Detail Desa Pekunden - Geoportal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Desa Kalisube - Geoportal</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
+
     <style>
-        :root { --primary: #444549; --secondary: #e7b51f; }
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .container { padding: 20px; max-width: 1000px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: var(--primary); font-weight: bold; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-item { background: #eee; padding: 15px; border-radius: 5px; text-align: center; }
-        .stat-item i { font-size: 24px; color: var(--secondary); margin-bottom: 10px; }
+        :root { 
+            --color-primary: #444549; 
+            --color-secondary: #e7b51f; 
+            --color-text-dark: #333;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; flex-direction: column; 
+            background-color: #f0f2f5;
+        }
+
+        /* --- HEADER --- */
+        .main-header { 
+            background-color: var(--color-primary); 
+            color: white; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            position: sticky; top: 0; z-index: 1100;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; border: 2px solid var(--color-secondary); }
+        .logo-text { font-size: 22px; font-weight: bold; }
+
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 15px; }
+
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 200px; max-height: 350px; overflow-y: auto;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1200; 
+            border-radius: 4px; top: 100%; right: 0;
+        }
+        .nav-dropdown-content a {
+            color: var(--color-text-dark) !important; padding: 12px 16px !important;
+            display: block !important; border-bottom: 1px solid #eee; margin: 0 !important;
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- CONTENT --- */
+        .hero-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1350&q=80'); 
+            background-size: cover; padding: 60px 5%; color: white; text-align: center;
+        }
+
+        .container { flex: 1; padding: 30px 5%; margin-top: -40px; }
+        .card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+            border-top: 5px solid var(--color-secondary);
+        }
+
+        #map-kalisube { height: 500px; width: 100%; border-radius: 8px; margin-top: 20px; border: 1px solid #ddd; }
+
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table th, .info-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .info-table th { background-color: #f8f9fa; width: 35%; color: var(--color-primary); }
+
+        .description-text { line-height: 1.7; color: #444; text-align: justify; }
+
+        .btn-crud {
+            background-color: var(--color-secondary); color: var(--color-primary);
+            border: none; padding: 12px 24px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+
+        footer { background-color: var(--color-primary); color: white; text-align: center; padding: 20px; font-size: 13px; }
+
+        .label-permanen {
+            background-color: white; border: 1px solid var(--color-primary);
+            border-radius: 4px; padding: 2px 6px; font-size: 11px;
+            font-weight: bold; color: #333; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* Z-index fix for Search Control */
+        .leaflet-control-search { z-index: 1000 !important; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Data Spasial Desa Pekunden</h1>
-    </div>
+
+    <header class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a> 
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <h1>Profil Desa Kalisube</h1>
+        <p>Eksotisme Alam Perbukitan dan Kemandirian Sektor Agraris</p>
+    </section>
+
     <div class="container">
-        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
-        
         <div class="card">
-            <h3><i class="fas fa-info-circle"></i> Profil Singkat</h3>
-            <p>Desa Pekunden merupakan pusat kebudayaan dan sejarah di Kecamatan Banyumas. Data ini terintegrasi dengan sistem Backend API.</p>
+            <h3><i class="fas fa-info-circle"></i> Deskripsi Wilayah</h3>
+            <div class="description-text">
+                <p><strong>Desa Kalisube</strong> merupakan wilayah yang memiliki karakteristik geografis unik di Kecamatan Banyumas, memadukan dataran rendah yang subur dengan kawasan perbukitan yang asri. Nama Kalisube merujuk pada kekayaan sumber daya airnya, di mana aliran sungai menjadi tumpuan utama sistem irigasi pertanian masyarakat setempat.</p>
+                <p>Sebagai desa dengan basis ekonomi agraris, Kalisube unggul dalam produksi padi berkualitas dan hasil perkebunan rakyat. Selain sektor pertanian, potensi peternakan sapi dan kambing juga berkembang pesat berkat melimpahnya ketersediaan pakan alami di area hijau desa. Keasrian alamnya menjadikan Kalisube memiliki potensi besar untuk dikembangkan sebagai kawasan agrowisata berbasis edukasi lingkungan.</p>
+            </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-item"><i class="fas fa-users"></i><h4>Populasi</h4><p>± 2.500 Jiwa</p></div>
-            <div class="stat-item"><i class="fas fa-map-marked-alt"></i><h4>Luas Wilayah</h4><p>120 Ha</p></div>
-            <div class="stat-item"><i class="fas fa-landmark"></i><h4>Situs Budaya</h4><p>5 Lokasi</p></div>
+        <div class="card">
+            <h3><i class="fas fa-university"></i> Statistik Wilayah</h3>
+            <table class="info-table">
+                <tr><th><i class="fas fa-users"></i> Populasi</th><td>± 1.842 Jiwa (Update 2024)</td></tr>
+                <tr><th><i class="fas fa-expand-arrows-alt"></i> Luas Wilayah</th><td>145,20 Hektar</td></tr>
+                <tr><th><i class="fas fa-mountain"></i> Topografi</th><td>Dataran Rendah & Perbukitan</td></tr>
+                <tr><th><i class="fas fa-briefcase"></i> Sektor Unggulan</th><td>Pertanian Padi, Perkebunan, Peternakan</td></tr>
+            </table>
         </div>
 
-        <div class="card" style="margin-top: 20px;">
-            <h3>Aksi Data (CRUD)</h3>
-            <button style="padding: 10px; background: var(--secondary); border: none; cursor: pointer;">Kelola Data Spasial</button>
+        <div class="card">
+            <h3><i class="fas fa-map-marked-alt"></i> Peta Spasial Desa Kalisube</h3>
+            <div id="map-kalisube"></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-database"></i> Manajemen Data</h3>
+            <p>Kelola data spasial dan atribut desa Kalisube melalui modul administrator.</p>
+            <a href="#" class="btn-crud"><i class="fas fa-edit"></i> Kelola Data Spasial (CRUD)</a>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas - Desa Kalisube.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.js"></script>
+
+    <script>
+        // 1. Inisialisasi Peta
+        var map = L.map('map-kalisube').setView([-7.5312, 109.3015], 15);
+
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var satelit = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Esri World Imagery'
+        });
+
+        // 2. Layer Groups
+        var layerBatasDesa = L.layerGroup().addTo(map);
+        var layerBalaiDesa = L.layerGroup().addTo(map);
+
+        function onEachFeature(feature, layer) {
+            var label = feature.properties.nama || feature.properties.Nama || feature.properties.NAMA || "Lokasi";
+            feature.properties.search_name = label; // Properti bantu untuk search
+
+            layer.bindTooltip(label.toString(), {
+                permanent: true, direction: 'auto', className: 'label-permanen'
+            }).openTooltip();
+        }
+
+        // 3. Load Data Kalisube
+        fetch('kalisube.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: { color: "#444549", weight: 3, fillColor: "#e7b51f", fillOpacity: 0.2 },
+                    onEachFeature: onEachFeature
+                }).addTo(layerBatasDesa);
+            });
+
+        // 4. Load Data Balai Desa
+        fetch('balai_desaa.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+                        radius: 8, fillColor: "#ff5722", color: "#fff", weight: 2, fillOpacity: 1
+                    }),
+                    onEachFeature: onEachFeature
+                }).addTo(layerBalaiDesa);
+            });
+
+        // 5. Fitur Search
+        var searchLayer = L.featureGroup([layerBatasDesa, layerBalaiDesa]);
+        var searchControl = new L.Control.Search({
+            layer: searchLayer,
+            propertyName: 'search_name',
+            marker: false,
+            initial: false,
+            zoom: 17,
+            collapsed: false,
+            textPlaceholder: 'Cari lokasi di Kalisube...'
+        });
+
+        searchControl.on('search:locationfound', function(e) {
+            if(e.layer.openTooltip) e.layer.openTooltip();
+        });
+        map.addControl(searchControl);
+
+        // 6. Kontrol Layer
+        var baseMaps = { "Peta Jalan": osm, "Satelit": satelit };
+        var overlayMaps = { "Batas Desa": layerBatasDesa, "Balai Desa": layerBalaiDesa };
+        L.control.layers(baseMaps, overlayMaps, { collapsed: true }).addTo(map);
+
+        // Fix map rendering
+        setTimeout(() => { map.invalidateSize(); }, 500);
+    </script>
 </body>
 </html>

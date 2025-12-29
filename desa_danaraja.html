@@ -2,28 +2,230 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Data Desa Danaraja</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Desa Danaraja - Geoportal</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <style>
-        :root { --primary: #444549; --secondary: #e7b51f; }
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .container { padding: 20px; max-width: 900px; margin: auto; }
-        .data-table { width: 100%; border-collapse: collapse; background: white; }
-        .data-table th, .data-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        .data-table th { background-color: var(--primary); color: white; }
+        :root { 
+            --color-primary: #444549; 
+            --color-secondary: #e7b51f; 
+            --color-text-dark: #333;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; flex-direction: column; 
+            background-color: #f0f2f5;
+        }
+
+        /* --- HEADER & NAVIGASI --- */
+        .main-header { 
+            background-color: var(--color-primary); 
+            color: white; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            position: relative;
+            z-index: 1100;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 10%; margin-right: 10px; }
+        .logo-text { font-size: 24px; font-weight: bold; }
+
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; transition: opacity 0.3s; }
+        nav a:hover { opacity: 0.8; }
+
+        /* Dropdown Styling */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; 
+            position: absolute; 
+            background-color: white;
+            min-width: 180px; 
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1200; 
+            border-radius: 4px; 
+            top: 100%; 
+            left: 0;
+        }
+        .nav-dropdown-content a {
+            color: var(--color-text-dark) !important; 
+            padding: 12px 16px !important;
+            display: block !important; 
+            border-bottom: 1px solid #eee; 
+            margin: 0 !important;
+        }
+        .nav-dropdown-content a:hover { background-color: #f1f1f1; opacity: 1; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1350&q=80'); 
+            background-size: cover; padding: 60px 5%; color: white; text-align: center;
+        }
+
+        /* --- CONTAINER & CARD --- */
+        .container { flex: 1; padding: 30px 5%; margin-top: -40px; }
+        .card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+            border-top: 5px solid var(--color-secondary);
+        }
+
+        /* Map Styling */
+        #map-danaraja {
+            height: 500px; width: 100%; border-radius: 8px; margin-top: 20px;
+            border: 1px solid #ddd; z-index: 1;
+        }
+
+        /* Table Styling */
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table th, .info-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .info-table th { background-color: #f8f9fa; width: 35%; color: var(--color-primary); }
+
+        /* Button Styling */
+        .btn-crud {
+            background-color: var(--color-primary); color: white;
+            border: none; padding: 12px 24px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: inline-block; margin-top: 15px;
+        }
+        .btn-crud:hover { background-color: #333; }
+
+        /* Footer */
+        footer { 
+            background-color: var(--color-primary); color: white; 
+            text-align: center; padding: 20px; font-size: 13px; 
+        }
+
+        /* Label Tooltip */
+        .label-permanen {
+            background-color: white; border: 1px solid #444549;
+            border-radius: 4px; padding: 2px 6px; font-size: 11px;
+            font-weight: bold; color: #333; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        .leaflet-tooltip-right:before, .leaflet-tooltip-left:before { display: none; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>Informasi Desa Danaraja</h1></div>
+
+    <header class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a> 
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <h1>Profil Desa Danaraja</h1>
+        <p>Kawasan Potensial dengan Karakteristik Masyarakat yang Religius dan Produktif</p>
+    </section>
+
     <div class="container">
-        <a href="index.html" style="text-decoration:none; color:black;">← Kembali</a>
-        <h3>Tabel Statistik Desa</h3>
-        <table class="data-table">
-            <tr><th>Kategori</th><th>Keterangan</th></tr>
-            <tr><td>Kepadatan Penduduk</td><td>Tinggi</td></tr>
-            <tr><td>Fasilitas Umum</td><td>Pasar, Sekolah, Puskesmas</td></tr>
-        </table>
+        <div class="card">
+            <h3><i class="fas fa-university"></i> Statistik & Kependudukan</h3>
+            <table class="info-table">
+                <tr><th><i class="fas fa-users"></i> Jumlah Penduduk</th><td>± 2.100 Jiwa</td></tr>
+                <tr><th><i class="fas fa-landmark"></i> Karakteristik</th><td>Pedalaman Asri & Agrikultur</td></tr>
+                <tr><th><i class="fas fa-store"></i> Sektor Ekonomi</th><td>Pertanian dan Industri Rumah Tangga</td></tr>
+                <tr><th><i class="fas fa-expand-arrows-alt"></i> Luas Wilayah</th><td>Estimasi 92 Hektar</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-map-marked-alt"></i> Peta Spasial Desa Danaraja</h3>
+            <div id="map-danaraja"></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-database"></i> Administrasi Data</h3>
+            <p>Klik tombol di bawah untuk memperbarui data spasial desa.</p>
+            <a href="#" class="btn-crud"><i class="fas fa-edit"></i> Pemutakhiran Data Danaraja</a>
+        </div>
     </div>
+
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas - Desa Danaraja.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // 1. Inisialisasi Peta - Fokus ke Danaraja
+        var map = L.map('map-danaraja').setView([-7.5340, 109.3020], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Fungsi Label Otomatis
+        function onEachFeature(feature, layer) {
+            var label = feature.properties.nama || feature.properties.Nama || feature.properties.NAMA || feature.properties.KETERANGAN;
+            if (label) {
+                layer.bindTooltip(label.toString(), {
+                    permanent: true,
+                    direction: 'auto',
+                    className: 'label-permanen'
+                }).openTooltip();
+            }
+        }
+
+        // 2. Memuat Layer Batas Desa Danaraja
+        fetch('danaraja.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: { color: "#444549", weight: 3, fillColor: "#e7b51f", fillOpacity: 0.2 },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File danaraja.geojson tidak ditemukan"));
+
+        // 3. Memuat Layer Balai Desa
+        fetch('balai_desaa.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.circleMarker(latlng, {
+                            radius: 8, fillColor: "#8bc34a", color: "#fff", weight: 2, fillOpacity: 1
+                        });
+                    },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File balai_desaa.geojson tidak ditemukan"));
+    </script>
 </body>
 </html>

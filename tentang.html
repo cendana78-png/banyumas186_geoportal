@@ -3,307 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang Proyek - Geoportal Banyumas Pekunden</title>
+    <title>Tentang & Portfolio - Geoportal Banyumas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* --- Variabel Warna Utama --- */
         :root { 
-            --color-primary: #444549; /* Abu-abu Gelap */
-            --color-secondary: #e7b51f; /* Kuning Emas */
-            --color-text-dark: #333; 
-            --color-shadow: rgba(0, 0, 0, 0.15);
+            --color-primary: #444549; 
+            --color-secondary: #e7b51f; 
+            --dark-bg: #1a1c23;
+            --card-bg: #2d303e;
+            --text-light: #ffffff;
+            --text-muted: #a0a0a0;
+            --footer-blue: #5eb5e0;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            background-color: white; 
-            color: var(--color-text-dark); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* --- HEADER & NAVIGASI (Desktop Base) --- */
+        /* --- HEADER TETAP (VERSI SEBELUMNYA) --- */
         .main-header { 
             background-color: var(--color-primary); 
-            color: white; 
-            padding: 10px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            position: relative; /* Penting untuk penempatan menu mobile */
-            z-index: 1000;
+            color: white; padding: 10px 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1100;
         }
 
         .header-left { display: flex; align-items: center; }
-        .header-left img {
-            width: 35px; height: 35px; border-radius: 10%; margin-right: 10px;
-        }
-        
-        .logo-text { font-size: 24px; font-weight: bold; }
-        
-        /* Navigasi Desktop */
-        nav { display: flex; } 
-        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; transition: opacity 0.3s; }
-        nav a:hover { opacity: 0.8; color: var(--color-secondary); }
+        .header-left img { width: 35px; height: 35px; border-radius: 10%; margin-right: 10px; }
+        .logo-text { font-size: 22px; font-weight: bold; }
 
-        /* --- HAMBURGER TOGGLE (Hanya Terlihat di Mobile) --- */
-        .menu-toggle {
-            background: none; border: none; color: white; font-size: 24px;
-            cursor: pointer; display: none; /* Sembunyikan di desktop */
-        }
-        
-        /* *************************************************************** */
-        /* *** EFEK HEADER TENTANG (Tidak Perlu Diubah) *** */
-        /* *************************************************************** */
-        @keyframes float-hover {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
+        nav { display: flex; align-items: center; } 
+        nav a { 
+            color: white; text-decoration: none; padding: 8px 15px; 
+            font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
 
-        .about-header {
-            background-image: url('kota.jpg'); 
-            background-size: cover;
-            background-position: center;
-            height: 250px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            text-align: center;
-            color: white; 
-            overflow: hidden; 
+        /* Gaya Khusus Menu Aktif Kapsul */
+        nav a.nav-active {
+            color: var(--color-secondary) !important;
+            font-weight: bold;
+            border: 2px solid var(--color-secondary);
+            border-radius: 20px;
+            padding: 5px 18px !important;
+            margin-left: 10px;
+            background-color: rgba(231, 181, 31, 0.1);
         }
+
+        /* Dropdown 12 Desa */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1200; border-radius: 4px; top: 100%; left: 0;
+            max-height: 350px; overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: #333 !important; padding: 12px 16px !important;
+            display: block !important; border-bottom: 1px solid #eee; 
+            margin: 0 !important; border: none !important; border-radius: 0 !important;
+        }
+        .nav-dropdown-content a:hover { background-color: #f1f1f1; color: var(--color-secondary) !important; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- PORTFOLIO CONTENT (DARK THEME) --- */
+        .portfolio-container {
+            max-width: 1150px; margin: 40px auto;
+            background-color: var(--dark-bg);
+            border-radius: 30px; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        /* Hero / Perkenalan */
+        .hero-box {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 80px 60px; background: linear-gradient(145deg, #232631, #1a1c23);
+        }
+        .hero-info h2 { font-size: 14px; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 20px; }
+        .hero-info h1 { font-size: 65px; line-height: 1; margin-bottom: 20px; font-weight: 800; }
+        .hero-info p { font-size: 18px; color: var(--text-muted); margin-bottom: 30px; }
+        .hero-photo img { width: 420px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+
+        .btn-wrap { display: flex; gap: 15px; }
+        .btn { padding: 12px 28px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-light { background: white; color: var(--dark-bg); }
+        .btn-outline { border: 2px solid #444; color: white; }
+
+        /* Detail Tentang & Pengalaman (Grid) */
+        .detail-section { 
+            padding: 60px; display: grid; 
+            grid-template-columns: 1fr 1.5fr 1fr; gap: 40px; 
+            border-top: 1px solid #333;
+        }
+        .sec-title h2 { font-size: 45px; border-bottom: 4px solid var(--color-secondary); display: inline-block; margin-bottom: 15px; }
         
-        .about-header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6); 
-            z-index: 1;
-            transition: background 0.3s ease; 
-        }
+        .info-list { list-style: none; color: var(--text-muted); line-height: 2; }
+        .info-list li { display: flex; align-items: center; gap: 12px; color: white; margin-bottom: 10px; }
+        .info-list i { color: var(--color-secondary); width: 20px; }
 
-        .about-header:hover::before {
-            background: rgba(0, 0, 0, 0.7);
-        }
+        .exp-box { background: var(--card-bg); padding: 30px; border-radius: 20px; }
+        .exp-box h3 { font-size: 16px; color: var(--text-muted); margin-bottom: 25px; text-transform: uppercase; }
+        .job-item { border-left: 2px solid var(--color-secondary); padding-left: 20px; margin-bottom: 30px; }
+        .job-item h4 { font-size: 16px; margin-bottom: 5px; }
+        .job-item p { font-size: 13px; color: var(--text-muted); }
 
-        .about-header-content {
-            z-index: 2; 
-            padding: 20px;
-        }
+        .skill-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .skill-pill { background: #3d404d; padding: 6px 15px; border-radius: 20px; font-size: 12px; }
 
-        .about-header h1 {
-            font-size: 44px;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            transition: all 0.3s ease-in-out;
+        /* Section Terima Kasih / Kontak */
+        .thanks-section { background: #252836; padding: 60px; text-align: center; }
+        .thanks-section h2 { font-size: 45px; margin-bottom: 40px; }
+        .contact-row { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .contact-item { 
+            background: var(--card-bg); padding: 20px 30px; border-radius: 15px; 
+            display: flex; align-items: center; gap: 15px; min-width: 280px; 
         }
+        .contact-item i { font-size: 28px; }
+        .c-green { color: #4caf50; } .c-blue { color: #2196f3; } .c-pink { color: #e91e63; }
+
+        /* --- FOOTER BIRU (REFERENSI CILACAP UTARA) --- */
+        .blue-footer { background-color: var(--footer-blue); color: white; padding: 60px 5% 20px; }
+        .f-container { 
+            max-width: 1200px; margin: 0 auto; display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;
+        }
+        .f-col img { width: 90px; margin-bottom: 20px; background: white; padding: 5px; border-radius: 5px; }
+        .f-col h4 { font-size: 18px; margin-bottom: 25px; position: relative; }
+        .f-col p, .f-col li { font-size: 14px; margin-bottom: 12px; list-style: none; line-height: 1.6; }
+        .f-col a { color: white; text-decoration: none; transition: 0.2s; }
+        .f-col a:hover { opacity: 0.7; padding-left: 5px; }
         
-        .about-header:hover h1 {
-            text-shadow: 0 0 10px white, 0 0 20px var(--color-secondary), 0 0 30px var(--color-secondary);
-            animation: float-hover 1.5s infinite ease-in-out; 
-        }
+        .social-flex { display: flex; gap: 15px; margin-top: 20px; }
+        .social-flex a { font-size: 24px; background: rgba(0,0,0,0.2); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
-        /* --- KONTEN TENTANG --- */
-        .content { 
-            flex: 1; 
-            padding: 40px 5%; 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            line-height: 1.7; 
-        }
-        
-        .content-section-title { 
-            font-size: 32px; 
-            color: var(--color-primary); 
-            margin-bottom: 30px; 
-            border-bottom: 2px solid var(--color-secondary);
-            padding-bottom: 10px;
-            display: flex; 
-            align-items: center; 
-        }
-        .content-section-title i { margin-right: 15px; color: var(--color-secondary); }
-        
-        .about-section { margin-bottom: 40px; }
-        .about-section h4 { color: var(--color-primary); font-size: 20px; border-left: 4px solid var(--color-secondary); padding-left: 10px; }
-        
-        .tech-logos { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin-top: 20px; }
-        .tech-logos i { 
-            font-size: 50px; 
-            color: #555; 
-            transition: color 0.3s, transform 0.3s; 
-            cursor: help; /* Memberikan indikasi bahwa ada tooltip/title */
-        }
-        .tech-logos i:hover { 
-            color: var(--color-secondary); 
-            transform: scale(1.1); /* Efek zoom saat hover */
-        }
-        
-        .list-data { list-style-type: disc; margin-left: 20px; }
-        
-        /* --- FOOTER --- */
-        footer { 
-            background-color: var(--color-primary); 
-            color: white; 
-            text-align: center; 
-            padding: 20px 5%; 
-            font-size: 14px; 
-            margin-top: auto; 
-        }
-        .footer-contact { margin-top: 5px; }
+        .f-copy { text-align: center; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 40px; padding-top: 20px; font-size: 12px; }
 
-        /* ======================================================= */
-        /* KRITIS: MEDIA QUERIES UNTUK TAMPILAN RESPONSIVE (HP) */
-        /* ======================================================= */
-        @media (max-width: 768px) {
-            
-            /* Tampilkan tombol menu */
-            .menu-toggle {
-                display: block; 
-            }
-            
-            /* Sembunyikan dan atur NAV sebagai menu vertikal di HP */
-            nav {
-                display: none; /* Sembunyikan secara default */
-                position: absolute;
-                top: 100%; /* Turun di bawah header */
-                right: 0;
-                width: 70%; 
-                max-width: 200px; /* Lebar menu yang lebih ringkas */
-                background-color: var(--color-primary);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-                flex-direction: column; 
-                z-index: 999; 
-                border-radius: 0 0 5px 5px;
-            }
-
-            /* Tampilkan NAV ketika class 'active' ditambahkan */
-            nav.active {
-                display: flex;
-            }
-
-            nav a {
-                padding: 12px 20px; /* Padding vertikal lebih besar */
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                text-align: left;
-            }
-            
-            /* Penyesuaian Teks Header */
-            .header-left {
-                max-width: 70%; /* Agar tidak menabrak menu toggle */
-            }
-            .logo-text { 
-                font-size: 18px; 
-                /* Opsional: Jika logo terlalu panjang, tambahkan ... */
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            /* Penyesuaian Header Utama 'Tentang' */
-            .about-header {
-                height: 180px; /* Ketinggian lebih rendah di HP */
-            }
-            .about-header h1 { 
-                font-size: 32px; 
-            }
-            
-            /* Penyesuaian Konten */
-            .content { 
-                padding: 20px 5%; /* Kurangi padding vertikal */
-            }
-            .content-section-title { 
-                font-size: 24px; 
-                /* Pindahkan ikon ke tengah di HP untuk konten-section-title */
-                justify-content: center;
-                text-align: center;
-            }
-            .content-section-title i { 
-                margin-right: 10px; 
-            }
-
-            /* Penyesuaian Logo Teknologi */
-            .tech-logos { 
-                gap: 20px; /* Kurangi jarak antar logo */
-            }
+        @media (max-width: 992px) {
+            .hero-box { flex-direction: column; text-align: center; padding: 40px; }
+            .hero-photo img { width: 100%; margin-top: 40px; }
+            .detail-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    
-    <div class="main-header">
+
+    <header class="main-header">
         <div class="header-left">
             <img src="Banyumas.png" alt="Logo">
-            <span class="logo-text">Geoportal Banyumas Pekunden</span>
+            <span class="logo-text">Geoportal Banyumas</span>
         </div>
-        
-        <button class="menu-toggle" aria-label="Toggle navigation" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
-        
         <nav id="main-nav">
             <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
-            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
-            <a href="peta_desa.html"><i class="fas fa-map-marked-alt"></i> Peta Pekunden</a>
-            <a href="tentang.html" style="font-weight: bold;"><i class="fas fa-info-circle"></i> Tentang</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a> 
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html" class="nav-active"><i class="fas fa-info-circle"></i> Tentang</a>
         </nav>
-    </div>
-    
-    <div class="about-header">
-        <div class="about-header-content">
-            <h1>Tentang Proyek Geoportal</h1>
-        </div>
-    </div>
-    <div class="content">
-        <div class="about-section">
-            <h3 class="content-section-title"><i class="fas fa-lightbulb"></i> Latar Belakang</h3>
-            <p>Geoportal Banyumas Pekunden merupakan sebuah proyek sistem informasi geografis (SIG) berbasis web yang bertujuan menyediakan akses mudah terhadap data spasial Kecamatan Banyumas dan secara spesifik Desa Pekunden. Portal ini dikembangkan sebagai bagian dari tugas akhir/proyek mandiri untuk mendukung perencanaan wilayah yang lebih informatif.  </p>
-        </div>
-        
-        <div class="about-section">
-            <h3 class="content-section-title"><i class="fas fa-database"></i> Sumber Data dan Metodologi</h3>
-            <p>Seluruh lapisan (layer) peta dibuat menggunakan perangkat lunak **QGIS** dari data citra satelit, peta Rupa Bumi Indonesia (RBI), dan hasil survei lapangan. Data diolah dengan sistem koordinat WGS 84 (EPSG:4326) agar kompatibel dengan standar peta web global.</p>
-            <p>Lapisan data utama meliputi:</p>
-            <ul class="list-data">
-                <li>Batas Administrasi (Desa, RT/RW)</li>
-                <li>Penggunaan Lahan (Sawah, Kebun)</li>
-                <li>Jaringan Transportasi (Jalan Desa, Kecamatan)</li>
-                <li>Poin Kepentingan (Balai Desa, Sekolah, Tempat Ibadah, Kesehatan)</li>
-            </ul>
-        </div>
+    </header>
 
-        <div class="about-section" style="text-align: center;">
-            <h3 class="content-section-title" style="justify-content: center;"><i class="fas fa-code"></i> Teknologi yang Digunakan</h3>
-            <p>Portal ini sepenuhnya dibangun dengan teknologi web terbuka (Open Source) yang ringan dan cepat:</p>
-            <div class="tech-logos">
-                <i class="fab fa-html5" title="HTML5"></i>
-                <i class="fab fa-css3-alt" title="CSS3"></i>
-                <i class="fab fa-js-square" title="JavaScript"></i>
-                <i class="fas fa-map-pin" title="Leaflet.js"></i>
-                <i class="fas fa-globe-americas" title="QGIS"></i> 
+    <main class="portfolio-container">
+        
+        <section class="hero-box">
+            <div class="hero-info">
+                <h2><i class="fas fa-briefcase"></i> PERKENALAN</h2>
+                <h1>DESAIN<br>PORTFOLIO</h1>
+                <p><strong>AKBAR ANDHIKA PUTRA</strong><br>Desain Grafis / Web SIG</p>
+                <div class="btn-wrap">
+                    <a href="#tentang" class="btn btn-light">Tentang Saya</a>
+                
+                </div>
+            </div>
+            <div class="hero-photo">
+                <img src="merbabu.png" alt="Akbar Andhuka Putra"> </div>
+        </section>
+
+        <section id="tentang" class="detail-section">
+            <div class="sec-title">
+                <h2>TENTANG<br>SAYA</h2>
+                <p style="color: var(--text-muted)">PROFIL PROFESIONAL</p>
+            </div>
+
+            <div class="sec-desc">
+                <ul class="info-list">
+                    <li><i class="fas fa-id-badge"></i> 23SA21A186</li>
+                    <li><i class="fas fa-graduation-cap"></i> SI23-B</li>
+                    <li><i class="fas fa-map-marker-alt"></i> GEOGRAPHIC INFORMATION SYSTEM</li>
+                    <li><i class="fas fa-user"></i> MAHASISWA</li>
+                    <li><i class="fas fa-university"></i> UNIVERSITAS AMIKOM PURWOKERTO</li>
+                </ul>
+                <p style="color: var(--text-muted); margin-top: 20px; line-height: 1.8;">
+                    Halo! Website ini dibuat untuk menampilkan informasi wilayah, data kelurahan, serta peta administrasi berbasis Web GIS (QGIS/qgis2web). Saya fokus pada desain grafis dan pengembangan sistem informasi geografis yang interaktif.
+                </p>
+            </div>
+
+            <div id="pengalaman" class="exp-box">
+                <h3>PENGALAMAN</h3>
+                <div class="job-item">
+                    <h4>Ruang Capcut – Kelas Editing Online Capcut</h4>
+                    <p>Desain, Photography, Videography (2023–Sekarang)</p>
+                </div>
+                <div class="job-item">
+                    <h4> Ngedit otodidak –  di software Handphone</h4>
+                    <p>Basic Editing (2023–Sekarang)</p>
+                </div>
+                <div class="skill-group">
+                    <span class="skill-pill">HTML</span>
+                    <span class="skill-pill">CSS</span>
+                    <span class="skill-pill">JavaScript</span>
+                    <span class="skill-pill">QGIS</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="thanks-section">
+            <h2>TERIMA KASIH</h2>
+            <p style="color: var(--text-muted); margin-bottom: 50px; letter-spacing: 2px;">LETS WORK HARD</p>
+            <div class="contact-row">
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp c-green"></i>
+                    <div><p style="font-size: 11px; color: var(--text-muted)">WhatsApp</p><p>+62 882-2952-7401</p></div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope c-blue"></i>
+                    <div><p style="font-size: 11px; color: var(--text-muted)">Email</p><p>dhika@gmail.com</p></div>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-instagram c-pink"></i>
+                    <div><p style="font-size: 11px; color: var(--text-muted)">Instagram</p><p>@dhikaptr_</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="blue-footer">
+        <div class="f-container">
+            <div class="f-col">
+                <img src="Banyumas.png" alt="Logo">
+                <p>Kecamatan Banyumas<br>Kabupaten Banyumas, Jawa Tengah</p>
+            </div>
+            <div class="f-col">
+                <h4>About</h4>
+                <p><i class="fas fa-map-pin"></i> Jl. Jaya Sirayu N0.111, Banyumas 54325</p>
+                <p><i class="fas fa-phone"></i> 0829810001801</p>
+                <p><i class="fas fa-globe"></i> http://banyumas.banyumaskab.go.id</p>
+            </div>
+            <div class="f-col">
+                <h4>Link</h4>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="peta_kecamatan.html">Peta Kecamatan</a></li>
+                <li><a href="tentang.html">Tentang Kami</a></li>
+            </div>
+            <div class="f-col">
+                <h4>Media Sosial</h4>
+                <div class="social-flex">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
             </div>
         </div>
-        
-    </div>
-    
-    <footer>
-        <p>&copy; 2025 Geoportal Banyumas Pekunden. Dibangun dengan QGIS, Leaflet, dan GitHub Pages.</p>
-        <p class="footer-contact">Kontak Pengembang: AndhikaPutra1234@gmail.com</p>
+        <div class="f-copy">
+            <p>&copy; 2025 All rights reserved. WEB GEOPORTAL BANYUMAS Version 4.0.0</p>
+        </div>
     </footer>
-    
-    <script>
-        // =========================================================================
-        // FUNGSI TOGGLE MENU HAMBURGER (UNTUK TAMPILAN MOBILE)
-        // =========================================================================
-        function toggleMenu() {
-            const nav = document.getElementById('main-nav');
-            nav.classList.toggle('active');
-        }
-    </script>
+
 </body>
 </html>

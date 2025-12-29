@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Desa Binangun - Geoportal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root { 
+            --color-primary: #4a148c; 
+            --color-secondary: #ffc107; 
+            --color-text-dark: #333;
+            --overlay-dark: rgba(49, 27, 146, 0.7);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; flex-direction: column; 
+            background-color: #f3e5f5;
+        }
+
+        /* --- HEADER & NAVIGASI --- */
+        .main-header { 
+            background-color: #210044; color: white; padding: 10px 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1100;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; border: 2px solid var(--color-secondary); }
+        .logo-text { font-size: 22px; font-weight: bold; }
+
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 15px; transition: 0.3s; }
+        nav a:hover { color: var(--color-secondary); }
+
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 200px; max-height: 350px; overflow-y: auto; 
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1200; 
+            border-radius: 4px; top: 100%; right: 0;
+        }
+        .nav-dropdown-content a {
+            color: var(--color-text-dark) !important; padding: 12px 16px !important;
+            display: block !important; border-bottom: 1px solid #eee; font-size: 14px;
+        }
+        .nav-dropdown-content a:hover { background-color: #f1f1f1; color: var(--color-primary) !important; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1516733968668-dbdce39c46ef?auto=format&fit=crop&w=1500&q=80'); 
+            background-size: cover; padding: 60px 5%; color: white; text-align: center;
+        }
+
+        /* --- CONTAINER & CARD --- */
+        .container { flex: 1; padding: 30px 5%; margin-top: -40px; }
+        .card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+            border-top: 5px solid var(--color-secondary);
+            border-left: 5px solid var(--color-primary);
+        }
+
+        #map-binangun { height: 500px; width: 100%; border-radius: 8px; margin-top: 20px; border: 1px solid #ddd; z-index: 1; }
+
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table th, .info-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .info-table th { background-color: #f8f9fa; width: 35%; color: var(--color-primary); }
+
+        .btn-crud {
+            background-color: var(--color-primary); color: white;
+            border: none; padding: 12px 24px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-crud:hover { background-color: #210044; transform: translateY(-2px); }
+
+        footer { background-color: #210044; color: white; text-align: center; padding: 20px; font-size: 13px; border-top: 3px solid var(--color-secondary); }
+
+        .label-permanen {
+            background-color: white; border: 1px solid var(--color-primary);
+            border-radius: 4px; padding: 2px 6px; font-size: 11px;
+            font-weight: bold; color: #333; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a> 
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <h1>Profil Desa Binangun</h1>
+        <p>Visualisasi Spasial dan Potensi Agraris di Kawasan Perbukitan</p>
+    </section>
+
+    <div class="container">
+        <div class="card">
+            <h3><i class="fas fa-file-alt"></i> Profil & Deskripsi Wilayah</h3>
+            <table class="info-table">
+                <tr><th><i class="fas fa-landmark"></i> Balai Desa</th><td>Pusat Pelayanan Administrasi Desa Binangun</td></tr>
+                <tr><th><i class="fas fa-users"></i> Kependudukan</th><td>Estimasi ± 1.850 Jiwa</td></tr>
+                <tr><th><i class="fas fa-expand-arrows-alt"></i> Luas Wilayah</th><td>Total cakupan area ± 92 Hektar</td></tr>
+                <tr><th><i class="fas fa-mountain"></i> Topografi</th><td>Dataran Tinggi / Perbukitan</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-map-marked-alt"></i> Peta Spasial Desa Binangun</h3>
+            <div id="map-binangun"></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-database"></i> Administrasi Data</h3>
+            <p>Klik tombol di bawah untuk memperbarui data spasial desa Binangun.</p>
+            <a href="#" class="btn-crud"><i class="fas fa-edit"></i> Pemutakhiran Data Binangun</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas - Desa Binangun.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map-binangun').setView([-7.5186, 109.2815], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        function onEachFeature(feature, layer) {
+            var label = feature.properties.nama || feature.properties.Nama || feature.properties.NAMA || feature.properties.nama_desa;
+            if (label) {
+                layer.bindTooltip(label.toString(), {
+                    permanent: true,
+                    direction: 'auto',
+                    className: 'label-permanen'
+                }).openTooltip();
+            }
+        }
+
+        // 1. Memuat Layer Batas Desa Binangun
+        fetch('binangun.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: { color: "#4a148c", weight: 3, fillColor: "#7b1fa2", fillOpacity: 0.3 },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File binangun.geojson tidak ditemukan"));
+
+        // 2. Memuat Layer Balai Desa (Menggunakan balai_desaa.geojson)
+        fetch('balai_desaa.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.circleMarker(latlng, {
+                            radius: 8, fillColor: "#ff5722", color: "#fff", weight: 2, fillOpacity: 1
+                        });
+                    },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File balai_desaa.geojson tidak ditemukan"));
+    </script>
+</body>
+</html>

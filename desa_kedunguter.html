@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Desa Kedunguter - Geoportal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
+
+    <style>
+        :root { 
+            --color-primary: #006666; 
+            --color-secondary: #e7b51f; 
+            --color-text-dark: #333;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; flex-direction: column; 
+            background-color: #f0f2f5;
+        }
+
+        /* --- HEADER --- */
+        .main-header { 
+            background-color: #444549; 
+            color: white; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            position: relative;
+            z-index: 1100;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 10%; margin-right: 10px; }
+        .logo-text { font-size: 24px; font-weight: bold; }
+
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 16px; }
+
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1200; border-radius: 4px; top: 100%; left: 0;
+        }
+        .nav-dropdown-content a {
+            color: var(--color-text-dark) !important; padding: 12px 16px !important;
+            display: block !important; border-bottom: 1px solid #eee; margin: 0 !important;
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- CONTENT --- */
+        .hero-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1350&q=80'); 
+            background-size: cover; padding: 60px 5%; color: white; text-align: center;
+        }
+
+        .container { flex: 1; padding: 30px 5%; margin-top: -40px; }
+        .card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+            border-top: 5px solid var(--color-primary);
+        }
+
+        #map-kedunguter {
+            height: 500px; width: 100%; border-radius: 8px; margin-top: 20px;
+            border: 1px solid #ddd; z-index: 1;
+        }
+
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table th, .info-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .info-table th { background-color: #f8f9fa; width: 35%; color: var(--color-primary); }
+
+        .btn-crud {
+            background-color: var(--color-secondary); color: var(--color-primary);
+            border: none; padding: 12px 24px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 15px;
+        }
+
+        footer { background-color: #444549; color: white; text-align: center; padding: 20px; font-size: 13px; }
+
+        .label-permanen {
+            background-color: white; border: 1px solid #006666;
+            border-radius: 4px; padding: 2px 6px; font-size: 11px;
+            font-weight: bold; color: #333; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a> 
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <h1>Profil Desa Kedunguter</h1>
+        <p>Wilayah Agropusat dengan Harmoni Masyarakat yang Berkelanjutan</p>
+    </section>
+
+    <div class="container">
+        <div class="card">
+            <h3><i class="fas fa-map-marked-alt"></i> Peta Spasial Desa Kedunguter</h3>
+            <div id="map-kedunguter"></div>
+        </div>
+
+        <div class="card">
+    <h3><i class="fas fa-info-circle"></i> Narasi Wilayah</h3>
+    <div class="description-text">
+        <p><strong>Kedunguter</strong> merupakan wilayah penyangga (<i>buffer zone</i>) strategis yang memadukan keasrian alam agraris dengan dinamika sosial masyarakat yang produktif. Terletak di jantung Kecamatan Banyumas, desa ini memiliki keunggulan geografis berupa lahan datar subur yang menjadikannya pusat komoditas pangan lokal.</p>
+        
+        <p>Sektor pertanian tetap menjadi tulang punggung ekonomi, namun transisi menuju digitalisasi melalui sistem Geoportal ini menunjukkan kesiapan desa dalam menghadapi tantangan modernisasi. Dengan indeks sosial yang tinggi, Kedunguter terus berkomitmen pada pembangunan berkelanjutan yang berbasis pada kearifan lokal dan kemajuan teknologi informasi.</p>
+    </div>
+</div>
+
+        <div class="card">
+            <h3><i class="fas fa-users"></i> Informasi Kependudukan</h3>
+            <table class="info-table">
+                <tr><th>Estimasi Penduduk</th><td>± 2.150 Jiwa</td></tr>
+                <tr><th>Sektor Unggulan</th><td>Pertanian & Hortikultura</td></tr>
+                <tr><th>Luas Wilayah</th><td>± 98 Hektar</td></tr>
+            </table>
+            <a href="#" class="btn-crud"><i class="fas fa-sync-alt"></i> Kelola Data Spasial</a>
+        </div>
+    </div>
+
+    <footer><p>&copy; 2025 Geoportal Banyumas - Desa Kedunguter.</p></footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.js"></script>
+
+    <script>
+        // 1. Inisialisasi Peta
+        var map = L.map('map-kedunguter').setView([-7.5250, 109.2900], 15);
+
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var satelit = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Esri World Imagery'
+        });
+
+        // 2. Layer Groups
+        var layerBatasDesa = L.layerGroup().addTo(map);
+        var layerBalaiDesa = L.layerGroup().addTo(map);
+
+        function onEachFeature(feature, layer) {
+            // Standarisasi pengambilan nama untuk Label dan Search
+            var label = feature.properties.nama || feature.properties.Nama || feature.properties.NAMA || "Lokasi";
+            feature.properties.search_name = label; // Properti bantu untuk search
+
+            layer.bindTooltip(label.toString(), {
+                permanent: true, direction: 'auto', className: 'label-permanen'
+            });
+        }
+
+        // 3. Load Data Kedunguter
+        fetch('kedunguter.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: { color: "#006666", weight: 3, fillColor: "#80cbc4", fillOpacity: 0.3 },
+                    onEachFeature: onEachFeature
+                }).addTo(layerBatasDesa);
+            });
+
+        // 4. Load Data Balai Desa
+        fetch('balai_desaa.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+                        radius: 8, fillColor: "#e91e63", color: "#fff", weight: 2, fillOpacity: 1
+                    }),
+                    onEachFeature: onEachFeature
+                }).addTo(layerBalaiDesa);
+            });
+
+        // 5. Fitur Search (Sudah disamakan dengan Sudagaran)
+        var searchLayer = L.featureGroup([layerBatasDesa, layerBalaiDesa]);
+        var searchControl = new L.Control.Search({
+            layer: searchLayer,
+            propertyName: 'search_name', 
+            marker: false,
+            initial: false,
+            zoom: 17,
+            collapsed: false,
+            textPlaceholder: 'Cari desa atau balai desa...'
+        });
+
+        searchControl.on('search:locationfound', function(e) {
+            if(e.layer.openTooltip) e.layer.openTooltip();
+        });
+        map.addControl(searchControl);
+
+        // 6. Layer Control
+        L.control.layers({ "Peta": osm, "Satelit": satelit }, 
+                         { "Batas Desa": layerBatasDesa, "Balai Desa": layerBalaiDesa }, 
+                         { collapsed: true }).addTo(map);
+
+        setTimeout(() => { map.invalidateSize(); }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Desa Kejawar - Geoportal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root { 
+            /* Warna khusus Desa Kejawar (Hijau Alam) */
+            --color-primary: #2d3436; 
+            --color-secondary: #27ae60; 
+            --color-accent: #2980b9;
+            --color-text-dark: #333;
+            --overlay-dark: rgba(0, 0, 0, 0.55);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; flex-direction: column; 
+            background-color: #f4f7f6;
+        }
+
+        /* --- HEADER & NAV DROPDOWN --- */
+        .main-header { 
+            background-color: var(--color-primary); color: white; padding: 10px 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 1100;
+        }
+        .header-left { display: flex; align-items: center; }
+        .header-left img { width: 35px; height: 35px; border-radius: 50%; margin-right: 12px; border: 2px solid var(--color-secondary); }
+        .logo-text { font-size: 22px; font-weight: bold; }
+
+        nav a { color: white; text-decoration: none; padding: 0 15px; font-size: 15px; transition: 0.3s; }
+        nav a:hover { color: var(--color-secondary); }
+
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none; position: absolute; background-color: white;
+            min-width: 200px; max-height: 350px; overflow-y: auto; 
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1200; 
+            border-radius: 4px; top: 100%; right: 0;
+        }
+        .nav-dropdown-content a {
+            color: var(--color-text-dark) !important; padding: 12px 16px !important;
+            display: block !important; border-bottom: 1px solid #eee; font-size: 14px;
+        }
+        .nav-dropdown-content a:hover { background-color: #f1f8f4; color: var(--color-secondary) !important; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1350&q=80'); 
+            background-size: cover; background-position: center; padding: 70px 5%; color: white; text-align: center;
+        }
+
+        /* --- CONTENT AREA --- */
+        .container { flex: 1; padding: 30px 5%; margin-top: -50px; }
+        
+        .card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+            border-top: 5px solid var(--color-secondary);
+        }
+
+        #map-kejawar { 
+            height: 500px; width: 100%; border-radius: 8px; margin-top: 20px; 
+            border: 1px solid #ddd; z-index: 1; 
+        }
+
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table th, .info-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .info-table th { background-color: #f9fdfa; color: var(--color-primary); width: 35%; }
+
+        .btn-crud {
+            background-color: var(--color-secondary); color: white;
+            border: none; padding: 12px 24px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-crud:hover { background-color: #1e8449; transform: translateY(-2px); }
+
+        footer { 
+            background-color: var(--color-primary); color: white; 
+            text-align: center; padding: 20px; font-size: 13px; 
+            border-top: 4px solid var(--color-secondary);
+        }
+
+        .label-permanen {
+            background-color: white; border: 1px solid var(--color-secondary);
+            border-radius: 4px; padding: 2px 6px; font-size: 11px;
+            font-weight: bold; color: #333; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-left">
+            <img src="Banyumas.png" alt="Logo">
+            <span class="logo-text">Geoportal Banyumas</span>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            <a href="peta_kecamatan.html"><i class="fas fa-map"></i> Peta Banyumas</a>
+            <div class="nav-dropdown">
+                <a href="#"><i class="fas fa-map-marked-alt"></i> Peta Desa <i class="fas fa-caret-down"></i></a>
+                <div class="nav-dropdown-content">
+                    <a href="desa_binangun.html">Binangun</a>
+                    <a href="desa_danaraja.html">Danaraja</a>
+                    <a href="desa_dawuhan.html">Dawuhan</a>
+                    <a href="desa_kalisube.html">Kalisube</a>
+                    <a href="desa_karangrau.html">Karangrau</a>
+                    <a href="desa_kedunggede.html">Kedunggede</a>
+                    <a href="desa_kedunguter.html">Kedunguter</a>
+                    <a href="desa_kejawar.html">Kejawar</a>
+                    <a href="desa_papringan.html">Papringan</a>
+                    <a href="desa_pasinggangan.html">Pasinggangan</a>
+                    <a href="desa_pekunden.html">Pekunden</a>
+                    <a href="desa_sudagaran.html">Sudagaran</a>
+                </div>
+            </div>
+            <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <h1>Profil Desa Kejawar</h1>
+        <p>Sentra Ketahanan Pangan dan Kawasan Hijau Berbasis Kemasyarakatan</p>
+    </section>
+
+    <div class="container">
+        <div class="card">
+            <h3><i class="fas fa-users-cog"></i> Data Kependudukan & Statistik</h3>
+            <table class="info-table">
+                <tr><th><i class="fas fa-user-friends"></i> Total Penduduk</th><td>± 3.450 Jiwa (Data 2024)</td></tr>
+                <tr><th><i class="fas fa-expand-arrows-alt"></i> Luas Wilayah</th><td>Estimasi 142 Hektar</td></tr>
+                <tr><th><i class="fas fa-tractor"></i> Mata Pencaharian</th><td>Petani, Peternak, dan Buruh Tani</td></tr>
+                <tr><th><i class="fas fa-leaf"></i> Komoditas Unggulan</th><td>Padi, Palawija, dan Perikanan Darat</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-map-marked-alt"></i> Peta Spasial Desa Kejawar</h3>
+            <div id="map-kejawar"></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-database"></i> Manajemen Data</h3>
+            <p>Klik tombol di bawah untuk memperbarui atribut data spasial Desa Kejawar.</p>
+            <a href="#" class="btn-crud"><i class="fas fa-plus-circle"></i> Update Atribut Kejawar (CRUD)</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Geoportal Banyumas - Desa Kejawar. <br> Powered by ASP.NET Core & Geo-Spatial Cloud Services.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // 1. Inisialisasi Peta - Fokus ke Kejawar
+        var map = L.map('map-kejawar').setView([-7.5250, 109.2850], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        function onEachFeature(feature, layer) {
+            var label = feature.properties.nama || feature.properties.Nama || feature.properties.NAMA || feature.properties.nama_desa;
+            if (label) {
+                layer.bindTooltip(label.toString(), {
+                    permanent: true,
+                    direction: 'auto',
+                    className: 'label-permanen'
+                }).openTooltip();
+            }
+        }
+
+        // 2. Memuat Batas Desa Kejawar
+        fetch('kejawar.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: { color: "#27ae60", weight: 3, fillColor: "#2ecc71", fillOpacity: 0.3 },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File kejawar.geojson tidak ditemukan"));
+
+        // 3. Memuat Balai Desa
+        fetch('balai_desaa.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.circleMarker(latlng, {
+                            radius: 8, fillColor: "#e67e22", color: "#fff", weight: 2, fillOpacity: 1
+                        });
+                    },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(err => console.warn("File balai_desaa.geojson tidak ditemukan"));
+    </script>
+</body>
+</html>
